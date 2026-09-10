@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>簡易抽獎 — 公會活動抽獎系統</title>
+<link rel="preconnect" href="https://accounts.google.com">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="brand">
+  <span class="guild">蛋雕教</span>
+  <span class="sys">公會活動抽獎系統</span>
+</header>
+
+<nav class="nav">
+  <a href="admin.html">管理者頁面</a>
+  <a href="event.html">進行中活動</a>
+  <a href="history.html">歷史活動</a>
+  <a href="index.html" class="active">簡易抽獎</a>
+</nav>
+
+<div class="wrap">
+  <div class="row" style="margin-bottom:12px">
+    <h1 style="margin:0">簡易抽獎</h1>
+    <span class="small muted">不寫檔、不進雲端；獎項與名單暫存在瀏覽器分頁裡，關掉分頁就清掉</span>
+  </div>
+
+  <div class="simple-grid">
+
+    <!-- 獎項 -->
+    <div class="card">
+      <div class="row" style="margin-bottom:10px">
+        <h2 style="margin:0">獎項</h2>
+        <span class="spacer" style="flex:1"></span>
+        <button id="spCopy" class="ghost sm">複製全部中獎名單</button>
+        <button id="spReset" class="danger sm">把結果蛋雕</button>
+      </div>
+      <table id="spPrizeTable">
+        <thead><tr>
+          <th>獎項</th><th style="width:56px">數量</th>
+          <th style="width:64px" title="勾選後本獎項可抽到其他獎項已中獎的人（加碼用）">可重複</th>
+          <th>得獎者</th><th style="width:36px"></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="hint">在最下面那一列輸入名稱按 Enter 就新增一列。點選獎項後右邊會擺上蓋牌。</p>
+    </div>
+
+    <!-- 名單 -->
+    <div class="card simple-panel">
+      <div class="row" style="justify-content:space-between">
+        <h2 style="margin:0">名單 (<span id="spTotal">0</span> 人)</h2>
+        <button id="spClear" class="ghost sm" style="color:var(--danger)">清空</button>
+      </div>
+
+      <div class="name-add" style="margin-top:10px">
+        <input id="spOne" type="text" placeholder="輸入名字…">
+        <button id="spAdd" title="加入名單">＋</button>
+      </div>
+      <div class="name-list" id="spList"></div>
+
+      <div class="field" style="margin-top:14px">
+        <label class="lbl" for="spBulk">批次輸入（換行或逗號分隔）</label>
+        <textarea id="spBulk" placeholder="貼上名單…&#10;例如：&#10;王小明&#10;陳美麗&#10;林大同"></textarea>
+        <button id="spBulkAdd" class="ghost sm" style="margin-top:8px">加入名單</button>
+      </div>
+    </div>
+
+    <!-- 抽獎 -->
+    <div class="card">
+      <div class="stage">
+        <div class="cur-label">當前抽獎：<strong id="spCurPrize">—</strong>
+          <span id="spBonus" class="tag bonus" style="display:none">加碼（可重複中獎）</span></div>
+        <div class="winners-list" id="spWinners"></div>
+        <div id="spHint" class="small muted" style="margin-top:8px"></div>
+      </div>
+      <div class="row" style="margin-top:12px;justify-content:center">
+        <button id="spDraw" style="font-size:16px;padding:8px 22px">阿拉花光</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/util.js"></script>
+<script src="js/lottery.js"></script>
+<script src="js/simple.js"></script>
+</body>
+</html>

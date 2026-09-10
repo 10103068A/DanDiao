@@ -1,0 +1,20 @@
+# Claude Code 本機設定
+.claude/settings.local.json
+
+# 內部文件與素材，不放上公開 repo
+*.pptx
+公會活動抽獎系統-規格書.md
+圖案.png
+
+# 測試 / 示範資料
+data/
+
+# 系統與編輯器
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+node_modules/
+
+# Claude Code 本機設定
+.claude/

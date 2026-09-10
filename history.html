@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>公會活動 — 歷史紀錄</title>
+<link rel="preconnect" href="https://accounts.google.com">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="brand">
+  <span class="guild">蛋雕教</span>
+  <span class="sys">公會活動抽獎系統</span>
+</header>
+
+<nav class="nav">
+  <a href="admin.html">管理者頁面</a>
+  <a href="event.html">進行中活動</a>
+  <a href="history.html" class="active">歷史活動</a>
+  <a href="index.html">簡易抽獎</a>
+</nav>
+
+<div class="wrap">
+  <div class="row">
+    <h1 style="margin:0">歷史活動</h1>
+    <span id="busySlot" class="busy-inline"></span>
+  </div>
+  <p class="hint">每場盛事都保留著完整參與者與被聖光壟罩的幸運兒名單。</p>
+  <div id="list"></div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/util.js"></script>
+<script src="js/lottery.js"></script>
+<script src="js/google.js"></script>
+<script src="js/store.js"></script>
+<script src="js/history.js"></script>
+</body>
+</html>

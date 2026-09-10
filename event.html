@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>進行中活動 — 公會活動抽獎系統</title>
+<link rel="preconnect" href="https://accounts.google.com">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="gate" class="gate" style="display:none">
+  <div class="brand gate-brand"><span class="guild">蛋雕教</span></div>
+  <h1>進行中活動</h1>
+  <p class="hint">請輸入共用密碼</p>
+  <div class="row" style="justify-content:center;margin-top:10px">
+    <input id="pass" type="password" placeholder="密碼">
+    <button id="passBtn">進入</button>
+  </div>
+  <p class="hint" id="passErr" style="color:var(--danger)"></p>
+</div>
+
+<div id="app" style="display:none">
+  <header class="brand">
+    <span class="guild">蛋雕教</span>
+    <span class="sys">公會活動抽獎系統</span>
+  </header>
+
+  <nav class="nav">
+    <a href="admin.html">管理者頁面</a>
+    <a href="event.html" class="active" id="navEvent">進行中活動</a>
+    <a href="history.html">歷史活動</a>
+    <a href="index.html">簡易抽獎</a>
+  </nav>
+
+  <div class="wrap">
+    <div id="noEvent" class="empty" style="display:none">目前沒有進行中的活動，請先到管理者頁面建立。</div>
+
+    <div id="main" style="display:none">
+      <div class="row">
+        <h1 id="evTitle" style="margin:0"></h1>
+        <span id="busySlot" class="busy-inline"></span>
+      </div>
+
+      <!-- 簽到區 -->
+      <div class="card hide-live" id="checkinCard">
+        <div class="row">
+          <span>簽到連結：</span>
+          <a id="ciUrl" class="mono small" target="_blank">（未產生）</a>
+          <button id="ciCopy" class="ghost sm">複製</button>
+          <button id="ciMake" class="sm" disabled>產生簽到表單</button>
+          <button id="ciPull" class="sm ghost" disabled>拉取簽到</button>
+          <button id="ciClose" class="sm ghost" disabled>結束簽到</button>
+          <span class="spacer" style="flex:1"></span>
+          <span>簽到碼：<strong id="ciCode" class="mono">—</strong></span>
+        </div>
+        <div id="ciAnom" class="anom"></div>
+      </div>
+
+      <!-- 抽獎工具列 -->
+      <div class="card">
+        <div class="row">
+          <strong>總共獎項：<span id="totalPrize">0</span></strong>
+          <span class="hide-live">
+            <label class="small">抽獎池
+              <select id="poolMode">
+                <option value="checkin">已簽到者</option>
+                <option value="all">全體有效報名者</option>
+              </select>
+            </label>
+          </span>
+          <span class="spacer" style="flex:1"></span>
+          <button id="liveBtn" class="sm hide-live">直播模式</button>
+        </div>
+        <div class="row small muted" style="margin-top:6px">
+          <span>報名人數：<strong id="cntReg">0</strong></span>
+          <span>簽到人數：<strong id="cntCi">0</strong></span>
+          <span id="cacheNote"></span>
+        </div>
+      </div>
+
+      <div class="lot-grid">
+        <!-- 獎項 -->
+        <div class="card" id="prizeCard">
+          <div class="row">
+            <h2 style="margin:0">本次獎項</h2>
+            <span class="spacer" style="flex:1"></span>
+            <button id="clearDraw" class="danger sm hide-live" data-write="1" disabled>把結果蛋雕</button>
+          </div>
+          <table id="prizeTable" style="margin-top:8px">
+            <thead><tr>
+              <th style="width:28px"></th>
+              <th>獎項</th><th style="width:60px">數量</th>
+              <th style="width:70px" title="勾選後本獎項可抽到先前已中獎的成員（加碼用）">可重複</th>
+              <th>得獎者</th>
+              <th style="width:40px" class="hide-live"></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+          <p class="hint hide-live">在最下面那一列輸入獎項名稱就會新增一列。已抽出的獎項會鎖定，不可修改、刪除或移動。</p>
+        </div>
+
+        <!-- 參加者 -->
+        <div class="card" id="partCard">
+          <div class="row">
+            <h2 style="margin:0">參加者 <span class="muted small" id="pTitle"></span></h2>
+            <span class="spacer" style="flex:1"></span>
+            <button id="pToggle" class="ghost sm">收合</button>
+          </div>
+          <div class="participants" id="pList" style="margin-top:8px"></div>
+        </div>
+
+        <!-- 舞台 -->
+        <div class="card" id="stageCard">
+          <div class="stage">
+            <div class="cur-label">當前抽獎：<strong id="curPrize">—</strong>
+              <span id="curBonus" class="tag bonus" style="display:none">加碼（可重複中獎）</span></div>
+            <div class="winners-list" id="curWinners"></div>
+            <div id="stageHint" class="small muted" style="margin-top:8px"></div>
+            <div id="shortageNote" class="small" style="color:var(--warn);margin-top:6px"></div>
+          </div>
+          <div class="row" style="margin-top:10px;justify-content:center">
+            <button id="drawBtn" style="font-size:16px;padding:8px 22px">阿拉花光</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card hide-live">
+        <button id="archiveBtn" disabled>儲存到歷史活動</button>
+      </div>
+    </div>
+  </div>
+
+  <button id="liveExit" class="live-exit" style="display:none">離開直播模式</button>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="js/config.js"></script>
+<script src="js/util.js"></script>
+<script src="js/lottery.js"></script>
+<script src="js/matching.js"></script>
+<script src="js/google.js"></script>
+<script src="js/store.js"></script>
+<script src="js/event.js"></script>
+</body>
+</html>
