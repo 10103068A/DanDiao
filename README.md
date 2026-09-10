@@ -9,6 +9,8 @@ index.html      首頁＝簡易抽獎（獨立小工具，不讀寫任何雲端�
 history.html    歷史活動（公開，可匯出各場中獎名單）
 admin.html      管理者頁面（新增活動、拉取報名、截止報名、報名異常 / 成員名單）
 event.html      進行中活動頁（簽到、抽獎、直播模式、存進歷史）
+privacy.html    隱私權政策（OAuth 同意畫面要求）
+terms.html      服務條款（OAuth 同意畫面要求）
 serve.js        本機開發用靜態伺服器
 
 css/style.css
@@ -135,6 +137,13 @@ repo 的 Settings → Pages → Source 選 `Deploy from a branch`、分支 `main
 
 - OAuth 用戶端的**已授權的 JavaScript 來源**加上新網址
 - API 金鑰的 **HTTP 參照網址限制**加上新網址
+
+## 隱私權與服務條款
+
+`privacy.html` / `terms.html` 是 Google OAuth 同意畫面（品牌頁）要求填寫的兩個連結，
+內容依本系統實際行為撰寫：資料存在會長個人 Drive、成員瀏覽不需登入、
+`drive.file` 只涵蓋本程式建立的檔案、token 只存 sessionStorage。
+改動授權範圍或資料流向時，記得一併更新這兩頁。
 
 ## 尚未實作
 

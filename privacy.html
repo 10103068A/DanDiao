@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>公會活動 — 隱私權政策</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="brand">
+  <span class="guild">蛋雕教</span>
+  <span class="sys">公會活動抽獎系統</span>
+</header>
+
+<nav class="nav">
+  <a href="admin.html">管理者頁面</a>
+  <a href="event.html">進行中活動</a>
+  <a href="history.html">歷史活動</a>
+  <a href="index.html">簡易抽獎</a>
+</nav>
+
+<div class="wrap">
+  <h1>隱私權政策</h1>
+  <p class="hint">最後更新：2026 年 9 月 11 日</p>
+
+  <div class="card">
+    <h2>這是什麼</h2>
+    <p>本系統是公會成員自行開發、供公會內部使用的靜態網頁，用來管理活動報名、簽到與抽獎。
+       我們沒有自己的伺服器，也沒有資料庫；所有資料存放在公會會長個人的 Google 雲端硬碟中。</p>
+  </div>
+
+  <div class="card">
+    <h2>我們蒐集哪些資料</h2>
+    <p>僅限公會活動所需的最小範圍：</p>
+    <ul>
+      <li>遊戲角色名稱或公會暱稱</li>
+      <li>活動報名與簽到紀錄</li>
+      <li>抽獎結果與獎項紀錄</li>
+    </ul>
+    <p>我們<strong>不會</strong>蒐集真實姓名、身分證字號、電話、住址、金流或付款資訊。</p>
+  </div>
+
+  <div class="card">
+    <h2>資料存放在哪裡</h2>
+    <p>以 JSON 檔案的形式存放在會長個人的 Google 雲端硬碟。這些檔案的權限設為
+       「知道連結的人皆可檢視」，讓公會成員不需登入就能查看名單與抽獎結果；
+       但只有檔案擁有者（會長）能夠修改。</p>
+  </div>
+
+  <div class="card">
+    <h2>關於 Google 登入</h2>
+    <ul>
+      <li><strong>一般成員瀏覽本站完全不需要登入</strong>，我們不會取得你的 Google 帳號資訊。</li>
+      <li>只有需要修改資料的管理者才需要登入 Google。</li>
+      <li>授權範圍為 <code>drive.file</code>，這代表本程式<strong>只能存取它自己建立的檔案</strong>，
+          無法讀取或修改你雲端硬碟中的任何其他檔案。</li>
+      <li>另會取得 <code>openid</code>、<code>email</code>，僅用於在畫面上顯示目前登入的帳號。</li>
+      <li>登入取得的存取權杖只暫存在你自己瀏覽器的 sessionStorage，關閉分頁即失效，
+          不會傳送給我們或任何第三方。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>瀏覽器本機儲存</h2>
+    <p>本站會使用瀏覽器的 localStorage 暫存名單與活動資料，目的是讓切換頁面時能更快顯示內容。
+       清除瀏覽器資料即可完全移除，這些內容不會離開你的裝置。</p>
+  </div>
+
+  <div class="card">
+    <h2>第三方服務</h2>
+    <p>本站僅使用 Google 提供的服務（Google 雲端硬碟、Google 表單、Google 帳戶登入），
+       以及 GitHub Pages 作為靜態網頁託管。我們不使用任何廣告或行為追蹤分析工具。</p>
+  </div>
+
+  <div class="card">
+    <h2>如何刪除你的資料</h2>
+    <p>若你希望移除自己的報名、簽到或抽獎紀錄，請直接聯絡公會會長，
+       或透過下方信箱與我們聯繫，我們會協助自資料檔中刪除對應紀錄。</p>
+  </div>
+
+  <div class="card">
+    <h2>聯絡方式</h2>
+    <p>如對本政策有任何疑問，請來信：<a href="mailto:a13245550@gmail.com">a13245550@gmail.com</a></p>
+  </div>
+</div>
+
+</body>
+</html>
