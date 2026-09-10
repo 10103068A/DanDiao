@@ -32,6 +32,6 @@ http.createServer((req, res) => {
   });
 }).listen(PORT, () => {
   console.log('公會活動抽獎系統  →  http://localhost:' + PORT);
-  console.log('管理者頁面        →  http://localhost:' + PORT + '/admin.html   密碼 DanDiao2026');
+  console.log('管理者頁面        →  http://localhost:' + PORT + '/admin.html   密碼見 js/config.js');
   console.log('停止：Ctrl+C');
 });

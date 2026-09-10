@@ -24,6 +24,8 @@ js/simple.js    簡易抽獎
 data/seed.json  DEMO 模式的初始資料（32 名成員 + 1 場歷史活動）
 ```
 
+`data/` 只供本機 DEMO 使用，已列入 `.gitignore`，不會進 repo；Drive 模式不會讀到它。
+
 ## 執行
 
 不能用 `file://` 直接開，`fetch` 會被 CORS 擋。
@@ -32,13 +34,15 @@ data/seed.json  DEMO 模式的初始資料（32 名成員 + 1 場歷史活動）
 node serve.js
 ```
 
-會印出網址（預設 http://localhost:4173），換 port 就在後面加數字。共用密碼：`DanDiao2026`（`js/config.js` 的 `PASSCODE`）。
+會印出網址（預設 http://localhost:4173），換 port 就在後面加數字。管理頁的共用密碼是 `js/config.js` 的 `PASSCODE`。
 
 ## 兩種模式
 
 `js/config.js` 的 `DEMO_MODE`：
 
-| | DEMO（預設） | Drive |
+目前設定為 **Drive 模式**（`DEMO_MODE = false`）。
+
+| | DEMO | Drive |
 |---|---|---|
 | 資料 | localStorage | Google Drive 三個 JSON |
 | 表單 | 產生假連結、假回覆 | 真的 Google Forms |
@@ -100,17 +104,37 @@ DEMO 模式的假回覆會刻意包含五類異常樣本（不在名單、重複
 ## 切到 Drive 模式要做的事
 
 1. Google Cloud 建專案，啟用 **Forms API** 與 **Drive API**
-2. 建立 OAuth 用戶端 ID（網頁應用程式），已授權的 JavaScript 來源填部署網址（本機測試填 `http://localhost:4173`）→ 填入 `CONFIG.GOOGLE.CLIENT_ID`
-3. 建立 API 金鑰，設網站限制與 Drive API 限制 → 填入 `API_KEY`
+2. 建立 OAuth 用戶端 ID（網頁應用程式），已授權的 JavaScript 來源填部署網址與 `http://localhost:4173`
+   → 填入 `CONFIG.GOOGLE.CLIENT_ID`
+3. 建立 API 金鑰，設 HTTP 參照網址限制與 Drive API 限制 → 填入 `API_KEY`
 4. `DEMO_MODE = false`
-5. 開管理頁 → 用**會長帳號**按「連線 Google」→ 按「初始化資料檔」
-   → 程式會建立三個 JSON 並設為「知道連結的人可讀」，畫面印出三行 ID
-6. 把那三行 ID 貼進 `CONFIG.GOOGLE.FILE_IDS`
-7. OAuth 同意畫面發布為「正式」（停在測試狀態，授權 7 天後失效；測試期間要把會長加進「測試使用者」）
+5. 開管理頁 → 用**會長帳號**按「連線 Google」→ 按「創立教典紀事」（已有聖所時是「另擇聖所安置」）
+   → 程式會建立三個 JSON 並設為「知道連結的人可讀」，畫面印出可直接貼上的 `FILE_IDS` 區塊
+6. 把那段貼進 `CONFIG.GOOGLE.FILE_IDS`
+7. OAuth 同意畫面發布為「正式」，否則只有「測試使用者」清單裡的帳號能登入
+
+> 換人當會長就是重跑第 5、6 步：新會長按「另擇聖所安置」在自己帳號建三份新檔案，再把新的 ID 貼回 `config.js`。
+> 舊資料可先用「匯出全部」帶出、再用「匯入」灌進新聖所。
 
 > **不要手動在 Drive 建那三個檔案。** `drive.file` scope 只涵蓋「本程式建立的檔案」，手動建的檔案會長自己也寫不進去（Drive 回 404）。
 
 規格 §15 風險 1（跨來源讀取公開 Drive 檔案）已於 2026-09-09 實測通過；風險 2（`setPublishSettings` 行為）待建立第一張表單時驗證。
+
+## 部署（GitHub Pages）
+
+純靜態、無建置流程，推上 `main` 就是部署：
+
+```bash
+git add -A && git commit -m "更新內容" && git push
+```
+
+repo 的 Settings → Pages → Source 選 `Deploy from a branch`、分支 `main`、資料夾 `/ (root)`，
+約一分鐘後上線。免費帳號需 repo 為 public。
+
+換了網址記得同步兩件事，否則線上按「連線 Google」會被擋：
+
+- OAuth 用戶端的**已授權的 JavaScript 來源**加上新網址
+- API 金鑰的 **HTTP 參照網址限制**加上新網址
 
 ## 尚未實作
 
