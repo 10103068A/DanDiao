@@ -194,13 +194,5 @@ const U = {
     document.body.appendChild(a);
     a.click();
     setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
-  },
-
-  /* 通過共用密碼才能看到管理 UI（§7.1） */
-  unlocked() { return sessionStorage.getItem('dd_unlocked') === '1'; },
-  unlock(input) {
-    if (input === CONFIG.PASSCODE) { sessionStorage.setItem('dd_unlocked', '1'); return true; }
-    return false;
-  },
-  lock() { sessionStorage.removeItem('dd_unlocked'); }
+  }
 };
