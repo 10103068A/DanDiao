@@ -5,13 +5,15 @@
 ## 檔案結構
 
 ```
-index.html      簡易抽獎（唯一的頁面）
+index.html      天選之人（由獎項抽人）
+gacha.html      命運扭蛋（單純抽物品，沒有名單）
 serve.js        本機開發用靜態伺服器
 
 css/style.css
 js/util.js      共用工具（DOM、翻牌、提示訊息）
 js/lottery.js   crypto 真亂數 + Fisher–Yates 洗牌
-js/simple.js    簡易抽獎
+js/simple.js    天選之人
+js/gacha.js     命運扭蛋
 ```
 
 ## 執行
@@ -24,7 +26,7 @@ node serve.js
 
 會印出網址（預設 http://localhost:4173），換 port 就在後面加數字。
 
-## 使用方式
+## 天選之人
 
 畫面分三欄：**獎項 / 名單 / 抽獎**。
 
@@ -35,7 +37,7 @@ node serve.js
 
 獎項與名單暫存在 `sessionStorage`：切分頁、重新整理都保留，關掉分頁就清掉。
 
-## 抽獎規則
+抽獎規則：
 
 - 採 crypto 真亂數，**刻意不可重現**：同一份名單重抽必然得到不同結果
 - 非加碼獎項的池一律排除「其他所有已抽出獎項」的得獎者，與抽的先後無關
@@ -43,10 +45,23 @@ node serve.js
 - 池中人數不足時抽到池空，多出來的牌翻成「—」並顯示缺額提示
 - 揭曉用翻牌：先擺上蓋著的牌，再一張一張翻開；遵守 `prefers-reduced-motion`
 
+## 命運扭蛋
+
+左邊是獎品表格，右邊是扭蛋機。
+
+1. 表格最後一列輸入獎品名稱與機率（%）按 Enter 新增；機率沒填預設 10
+2. 點圖片格（或把圖片拖進去）上傳圖片；圖片會縮成長邊 240px 再存，避免塞爆瀏覽器空間
+3. 機率合計不是 100% 時依比例換算，每列下方會顯示換算後的實際機率；機率 0 的獎品不會被抽到
+4. 按「阿拉花光」或直接點把手：把手轉、扭蛋晃，一顆扭蛋掉到出口，接著全螢幕開獎（Esc / Enter 關閉）
+5. 下方「扭蛋紀錄」列出每次結果與各獎品累計次數，可複製或清空
+
+獎品、圖片與紀錄存在 `localStorage`：只存在這台電腦的這個瀏覽器，重新整理、關掉再開都還在，換電腦或換瀏覽器就看不到。
+抽選同樣使用 crypto 真亂數，依權重抽出。
+
 ## 公會名稱
 
 頁首的「蛋雕教」是純 CSS 文字（`css/style.css` 的 `.brand`），不是圖片。
-要改名稱就改 `index.html` 裡的 `<span class="guild">`；要換配色改 `.brand` 與 `.guild` 的 `background`。
+要改名稱就改 `index.html` 與 `gacha.html` 裡的 `<span class="guild">`；要換配色改 `.brand` 與 `.guild` 的 `background`。
 
 ## 部署（GitHub Pages）
 

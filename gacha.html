@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>命運扭蛋 — 公會活動抽獎系統</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="brand">
+  <span class="guild">蛋雕教</span>
+  <span class="sys">公會活動抽獎系統</span>
+</header>
+
+<nav class="nav">
+  <a href="index.html">天選之人</a>
+  <a href="gacha.html" class="active">命運扭蛋</a>
+</nav>
+
+<div class="wrap">
+  <div class="row" style="margin-bottom:12px">
+    <h1 style="margin:0">命運扭蛋</h1>
+    <span class="small muted">獎品與圖片存在這台電腦的瀏覽器裡，重新整理、關掉再開都還在</span>
+  </div>
+
+  <div class="gacha-grid">
+
+    <!-- 獎品 -->
+    <div class="card">
+      <div class="row" style="margin-bottom:10px">
+        <h2 style="margin:0">獎品</h2>
+        <span class="spacer" style="flex:1"></span>
+        <button id="gcClearItems" class="ghost sm" style="color:var(--danger)">清空獎品</button>
+      </div>
+      <table id="gcTable">
+        <thead><tr>
+          <th style="width:64px">圖片</th><th>獎品</th>
+          <th style="width:96px">機率 (%)</th><th style="width:36px"></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+      <div id="gcTotal" class="gc-total"></div>
+      <p class="hint">在最下面那一列輸入名稱按 Enter 就新增一列。點圖片格（或把圖片拖進去）就能上傳圖片。
+        機率合計不是 100% 時，會依比例換算。</p>
+      <input id="gcFile" type="file" accept="image/*" hidden>
+    </div>
+
+    <!-- 扭蛋機 -->
+    <div class="card gc-stage">
+      <div class="gm" id="gm">
+        <div class="gm-cap"></div>
+        <div class="gm-dome" id="gmDome"></div>
+        <div class="gm-body">
+          <div class="gm-plate">命運扭蛋</div>
+          <button class="gm-knob" id="gmKnob" title="轉動扭蛋機"><span class="gm-knob-bar"></span></button>
+          <div class="gm-chute"><div class="gm-out" id="gmOut"></div></div>
+        </div>
+        <div class="gm-base"></div>
+      </div>
+      <div class="row" style="margin-top:16px;justify-content:center">
+        <button id="gcSpin" style="font-size:16px;padding:8px 26px">阿拉花光</button>
+      </div>
+      <div id="gcHint" class="small muted" style="margin-top:8px;text-align:center"></div>
+
+      <div class="gc-log">
+        <div class="row" style="justify-content:space-between">
+          <h2 style="margin:0">扭蛋紀錄 (<span id="gcLogCount">0</span> 次)</h2>
+          <div class="row">
+            <button id="gcCopyLog" class="ghost sm">複製紀錄</button>
+            <button id="gcClearLog" class="danger sm">清空紀錄</button>
+          </div>
+        </div>
+        <div id="gcSummary" class="gc-summary"></div>
+        <ol id="gcLog" class="gc-log-list"></ol>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 開獎畫面 -->
+<div class="gr" id="gr" hidden>
+  <div class="gr-rays"></div>
+  <div class="gr-box">
+    <div class="gr-capsule" id="grCapsule">
+      <div class="gr-half gr-top"></div>
+      <div class="gr-half gr-bottom"></div>
+    </div>
+    <div class="gr-prize" id="grPrize"></div>
+    <div class="gr-name" id="grName"></div>
+    <button id="grClose" class="gr-close">收下</button>
+  </div>
+</div>
+
+<script src="js/util.js"></script>
+<script src="js/lottery.js"></script>
+<script src="js/gacha.js"></script>
+</body>
+</html>
