@@ -111,9 +111,19 @@ U.$('#gcFile').addEventListener('change', e => {
 });
 
 /* ---------- 獎品表格 ---------- */
+/* 名稱欄寬度：量最長的獎品名稱，讓每個名字都能完整顯示（至少約 8 個字寬） */
+let measureCtx = null;
+function nameWidth() {
+  measureCtx = measureCtx || document.createElement('canvas').getContext('2d');
+  measureCtx.font = '13px "Microsoft JhengHei", "Segoe UI", system-ui, sans-serif';
+  const longest = G.items.reduce((m, it) => Math.max(m, measureCtx.measureText(it.name).width), 0);
+  return Math.ceil(Math.max(longest, measureCtx.measureText('輸入獎品名稱').width) + 26) + 'px';
+}
+
 function renderItems() {
   const tb = U.$('#gcTable tbody');
   tb.textContent = '';
+  const nameW = nameWidth();
   const total = totalWeight();
   const normalize = total > 0 && Math.abs(total - 100) > 0.001;
 
@@ -135,11 +145,12 @@ function renderItems() {
     });
     tr.appendChild(U.el('td', {}, [pic]));
 
-    const nameIn = U.el('input', { value: it.name, size: 10 });
+    const nameIn = U.el('input', { value: it.name, title: it.name });
+    nameIn.style.width = nameW;
     nameIn.addEventListener('change', () => {
       it.name = nameIn.value.trim() || it.name;
-      nameIn.value = it.name;
       save();
+      renderItems();              // 名稱變長時欄寬跟著調整
       renderLog();
     });
     tr.appendChild(U.el('td', {}, [nameIn]));
@@ -173,7 +184,7 @@ function renderItems() {
     tb.appendChild(tr);
   });
 
-  tb.appendChild(draftRow());
+  tb.appendChild(draftRow(nameW));
 
   const box = U.$('#gcTotal');
   if (!G.items.length) { box.textContent = ''; box.className = 'gc-total'; return; }
@@ -212,9 +223,10 @@ function stockCell(it) {
 }
 
 /* 固定留在最後一列的待輸入列 */
-function draftRow() {
+function draftRow(nameW) {
   const tr = U.el('tr', { class: 'gc-row draft' });
-  const nameIn = U.el('input', { placeholder: '輸入獎品名稱', size: 10 });
+  const nameIn = U.el('input', { placeholder: '輸入獎品名稱' });
+  nameIn.style.width = nameW;
   const wIn = U.el('input', { type: 'number', min: 0, step: 'any', placeholder: '10' });
   wIn.style.width = '72px';
 
@@ -331,8 +343,21 @@ function reveal(item) {
     const prize = U.$('#grPrize');
     gr.style.setProperty('--cap', colorOf(item));
     prize.textContent = '';
-    prize.appendChild(item.img ? U.el('img', { src: item.img, alt: item.name })
-                               : U.el('span', { class: 'gr-noimg', text: '🎁' }));
+    if (item.img) {
+      const img = U.el('img', { src: item.img, alt: item.name });
+      // 長邊至少 168、最多 230，介於中間就用原尺寸；等比例縮放
+      img.addEventListener('load', () => {
+        const w = img.naturalWidth, h = img.naturalHeight, side = Math.max(w, h);
+        const k = Math.min(230, Math.max(168, side)) / side;
+        img.style.width = Math.round(w * k) + 'px';
+        img.style.height = Math.round(h * k) + 'px';
+        // 原圖很小（遊戲圖示之類）放大時用像素風格，不然會糊成一團
+        if (side < 120) img.classList.add('pixel');
+      });
+      prize.appendChild(img);
+    } else {
+      prize.appendChild(U.el('span', { class: 'gr-noimg', text: '🎁' }));
+    }
     U.$('#grName').textContent = item.name;
 
     gr.className = 'gr';
