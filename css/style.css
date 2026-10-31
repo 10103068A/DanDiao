@@ -412,6 +412,9 @@ button.gc-pic, .gc-pic {
 .gc-pic:has(img) { border-style: solid; border-color: var(--cap); background: #fff; }
 .gc-pic.drop { border-color: var(--blue); background: var(--blue-soft); }
 .gc-pic.blank { opacity: .5; }
+.gc-row.soldout .gc-pic, .gc-row.soldout input:not([type=checkbox]) { opacity: .45; }
+.gc-stock .tag { margin-top: 4px; }
+.tag.soldout { background: #fdeaea; color: var(--danger); }
 .gc-total { font-size: 12px; font-weight: 600; margin-top: 8px; }
 .gc-total.ok { color: var(--ok); }
 .gc-total.warn { color: var(--warn); }

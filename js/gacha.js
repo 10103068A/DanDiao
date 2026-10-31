@@ -3,7 +3,7 @@
    圖片上傳時先縮成小圖，避免撐爆 localStorage（約 5MB）。 */
 
 const G = {
-  items: [],      // { id, name, weight, img }
+  items: [],      // { id, name, weight, img, limited, stock }；limited = 抽中一次 stock 扣 1
   log: [],        // { id, name, at }，新的在前
   spinning: false
 };
@@ -42,13 +42,19 @@ function restore() {
 }
 
 /* ---------- 機率 ---------- */
+function soldOut(it) { return !!it.limited && !(it.stock > 0); }
+
+/* 還抽得到：機率大於 0，而且不是已抽完的限量獎品 */
+function available(it) { return it.weight > 0 && !soldOut(it); }
+
+/* 只算還抽得到的獎品；限量獎品抽完後，其餘獎品自動依比例換算 */
 function totalWeight() {
-  return G.items.reduce((s, it) => s + (it.weight > 0 ? it.weight : 0), 0);
+  return G.items.reduce((s, it) => s + (available(it) ? it.weight : 0), 0);
 }
 
 /* 依權重抽一個。權重可以有小數，先放大成整數再用 crypto 亂數 */
 function pickItem() {
-  const pool = G.items.filter(it => it.weight > 0);
+  const pool = G.items.filter(available);
   const scaled = pool.map(it => Math.round(it.weight * 1000));
   const sum = scaled.reduce((s, w) => s + w, 0);
   if (!sum) return null;
@@ -112,7 +118,7 @@ function renderItems() {
   const normalize = total > 0 && Math.abs(total - 100) > 0.001;
 
   G.items.forEach((it, i) => {
-    const tr = U.el('tr', { class: 'gc-row' });
+    const tr = U.el('tr', { class: 'gc-row' + (soldOut(it) ? ' soldout' : '') });
 
     // 圖片：點一下上傳，也可以直接把圖片拖進來
     const pic = U.el('button', { class: 'gc-pic', title: it.img ? '點一下換圖片' : '點一下上傳圖片' });
@@ -147,10 +153,12 @@ function renderItems() {
       renderStage();
     });
     const wCell = U.el('td', {}, [wIn]);
-    if (normalize && it.weight > 0) {
+    if (normalize && available(it)) {
       wCell.appendChild(U.el('div', { class: 'small muted', text: '實際 ' + fmtPct(it.weight / total * 100) }));
     }
     tr.appendChild(wCell);
+
+    tr.appendChild(stockCell(it));
 
     const del = U.el('button', { class: 'ghost sm', text: '✕', title: '刪除' });
     del.addEventListener('click', () => {
@@ -169,10 +177,38 @@ function renderItems() {
 
   const box = U.$('#gcTotal');
   if (!G.items.length) { box.textContent = ''; box.className = 'gc-total'; return; }
-  box.textContent = '合計 ' + fmtPct(total) +
-    (total <= 0 ? '，請至少給一個獎品大於 0 的機率'
+  const out = G.items.filter(soldOut).length;
+  box.textContent = '合計 ' + fmtPct(total) + (out ? '（不含已抽完的 ' + out + ' 項）' : '') +
+    (total <= 0 ? (out ? '，獎品都抽完了' : '，請至少給一個獎品大於 0 的機率')
       : (normalize ? '，抽獎時依比例換算成 100%' : ''));
   box.className = 'gc-total ' + (total > 0 && !normalize ? 'ok' : 'warn');
+}
+
+/* 限量：勾選後才能填數量，抽中一次扣 1，扣到 0 就不會再被抽到 */
+function stockCell(it) {
+  const td = U.el('td', { class: 'gc-stock' });
+  const lim = U.el('input', { type: 'checkbox', title: '勾選後每抽中一次數量扣 1' });
+  lim.checked = !!it.limited;
+  const qty = U.el('input', { type: 'number', min: 0, step: 1, value: it.stock || 0 });
+  qty.style.width = '56px';
+
+  const line = U.el('div', { class: 'row', style: 'gap:6px;flex-wrap:nowrap' }, [lim]);
+  if (it.limited) line.appendChild(qty);
+  else line.appendChild(U.el('span', { class: 'small muted', text: '不限' }));
+  td.appendChild(line);
+  if (soldOut(it)) td.appendChild(U.el('span', { class: 'tag soldout', text: '已抽完' }));
+
+  const changed = () => { save(); renderItems(); renderDome(); renderStage(); };
+  lim.addEventListener('change', () => {
+    it.limited = lim.checked;
+    if (it.limited && !(it.stock >= 0)) it.stock = 1;     // 第一次勾選給個起始數量
+    changed();
+  });
+  qty.addEventListener('change', () => {
+    it.stock = Math.max(0, parseInt(qty.value, 10) || 0);
+    changed();
+  });
+  return td;
 }
 
 /* 固定留在最後一列的待輸入列 */
@@ -205,6 +241,7 @@ function draftRow() {
   tr.appendChild(U.el('td', {}, [nameIn]));
   tr.appendChild(U.el('td', {}, [wIn]));
   tr.appendChild(U.el('td', {}));
+  tr.appendChild(U.el('td', {}));
   return tr;
 }
 
@@ -214,7 +251,8 @@ function draftRow() {
 function renderDome() {
   const dome = U.$('#gmDome');
   dome.querySelectorAll('.gm-ball').forEach(b => b.remove());
-  const colors = G.items.length ? G.items.map(colorOf) : COLORS;
+  const left = G.items.filter(available);                 // 抽完的獎品不再出現在球罩裡
+  const colors = left.length ? left.map(colorOf) : COLORS;
   const S = 348, R = S / 2, D = 54;     // 球罩內徑（360 扣掉邊框）、扭蛋直徑，跟 CSS 對齊
   let n = 0;
   for (let row = 0; ; row++) {
@@ -242,7 +280,8 @@ function renderStage() {
   U.$('#gcSpin').disabled = !ok;
   U.$('#gmKnob').disabled = !ok;
   U.$('#gcHint').textContent = !G.items.length ? '請先在左邊新增獎品'
-    : (!ok ? '所有獎品的機率都是 0，沒有東西可以抽' : '');
+    : (ok ? '' : (G.items.some(soldOut) ? '獎品都抽完了，到左邊補數量就能繼續'
+                                        : '所有獎品的機率都是 0，沒有東西可以抽'));
 }
 
 const wait = ms => new Promise(r => setTimeout(r, ms));
@@ -273,9 +312,12 @@ async function spin() {
     }
 
     G.log.unshift({ id: item.id, name: item.name, at: new Date().toISOString() });
+    if (item.limited) item.stock = Math.max(0, (item.stock || 0) - 1);
     save();
     renderLog();
+    renderItems();
     await reveal(item);
+    renderDome();                              // 開獎畫面關掉後，抽完的扭蛋才從球罩消失
   } finally {
     G.spinning = false;
     renderStage();

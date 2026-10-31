@@ -36,13 +36,15 @@
       <table id="gcTable">
         <thead><tr>
           <th style="width:64px">圖片</th><th>獎品</th>
-          <th style="width:96px">機率 (%)</th><th style="width:36px"></th>
+          <th style="width:96px">機率 (%)</th>
+          <th style="width:96px" title="勾選後每抽中一次數量扣 1，扣到 0 就不會再被抽到">限量</th>
+          <th style="width:36px"></th>
         </tr></thead>
         <tbody></tbody>
       </table>
       <div id="gcTotal" class="gc-total"></div>
       <p class="hint">在最下面那一列輸入名稱按 Enter 就新增一列。點圖片格（或把圖片拖進去）就能上傳圖片。
-        機率合計不是 100% 時，會依比例換算。</p>
+        機率合計不是 100% 時，會依比例換算。勾選「限量」後每抽中一次數量扣 1，扣到 0 就不會再被抽到。</p>
       <input id="gcFile" type="file" accept="image/*" hidden>
     </div>
 
